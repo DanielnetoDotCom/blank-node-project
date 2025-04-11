@@ -1,16 +1,34 @@
-import express from 'express';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import https from 'https';
+import http from 'http';
+import app from './app.js';
 
 // Load environment variables
 dotenv.config({ path: './.env' });
 
-const app = express();
 const PORT = process.env.BACKEND_PORT || 5000;
 
-app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello from backend!' });
-});
+// Load SSL paths from environment
+const keyPath = process.env.SSL_KEY_PATH;
+const certPath = process.env.SSL_CERT_PATH;
+if (process.env.NODE_ENV !== 'test') {
+  // Conditional HTTPS support
+  if (keyPath && certPath && fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+    // SSL files found, start HTTPS server
+    const sslOptions = {
+      key: fs.readFileSync(keyPath),
+      cert: fs.readFileSync(certPath),
+    };
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+    https.createServer(sslOptions, app).listen(PORT, () => {
+      console.log(`🔐 HTTPS server is running on port ${PORT}`);
+    });
+  } else {
+    // SSL not configured, start regular HTTP server
+    http.createServer(app).listen(PORT, () => {
+      console.log(`🌐 HTTP server is running on port ${PORT}`);
+    });
+  }
+}
+
