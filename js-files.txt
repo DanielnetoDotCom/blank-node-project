@@ -1,3 +1,10 @@
+--- FILE: frontend\babel.config.js ---
+// frontend/babel.config.js
+export default {
+    presets: ['@babel/preset-env', '@babel/preset-react'],
+}
+
+
 --- FILE: frontend\eslint.config.js ---
 import js from '@eslint/js'
 import globals from 'globals'
@@ -7,10 +14,13 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 export default [
   { ignores: ['dist'] },
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['**/__tests__/**/*.{js,jsx}', '**/*.test.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.jest,
+      },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
@@ -20,6 +30,7 @@ export default [
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'jest': jest,
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -32,6 +43,26 @@ export default [
     },
   },
 ]
+
+
+--- FILE: frontend\jest.config.js ---
+export default {
+  testEnvironment: 'jest-environment-jsdom',
+  transform: {
+    '^.+\\.jsx?$': 'babel-jest',
+  },
+  moduleNameMapper: {
+    // 👇 isso resolve o problema
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '\\.(svg|png|jpg|jpeg|gif|webp)$': '<rootDir>/__mocks__/fileMock.js',
+  },
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+};
+
+
+--- FILE: frontend\jest.setup.js ---
+// frontend/jest.setup.js
+import '@testing-library/jest-dom';
 
 
 --- FILE: frontend\src\App.jsx ---
@@ -85,39 +116,123 @@ createRoot(document.getElementById('root')).render(
 )
 
 
---- FILE: frontend\vite.config.js ---
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import tailwindcss from '@tailwindcss/vite'
+--- FILE: frontend\src\__tests__\App.test.jsx ---
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import App from '../App'
 
-export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
-  server: {
-    // allowedHosts: ['ticket-system.danielneto.com'],
-    host: true,  
-    port: parseInt(import.meta.env.VITE_PORT) || 5001,
-  },
+describe('App component', () => {
+  it('renders the app title', () => {
+    render(<App />)
+    const title = screen.getByText(/WhatsApp Contact Sync/i)
+    expect(title).toBeInTheDocument()
+  })
 })
 
 
---- FILE: backend\server.js ---
-import express from 'express';
-import dotenv from 'dotenv';
+--- FILE: frontend\vite.config.js ---
+import { defineConfig, loadEnv } from 'vite'
+import react from '@vitejs/plugin-react-swc'
+import tailwindcss from '@tailwindcss/vite'
+import process from 'process'
 
-// Load environment variables
-dotenv.config({ path: '../.env' });
+export default defineConfig(({ mode }) => {
+  // Carregar as variáveis de ambiente corretamente
+  const env = loadEnv(mode, process.cwd(), '')
+  return {
+    plugins: [
+      react(),
+      tailwindcss(),
+    ],
+    server: {
+      // allowedHosts: ['ticket-system.danielneto.com'],
+      host: true,  
+      port: parseInt(env.VITE_PORT) || 5001, // Usando a variável carregada do .env
+    },
+  }
+})
+
+
+--- FILE: frontend\__mocks__\fileMock.js ---
+// frontend/__mocks__/fileMock.js
+export default 'test-file-stub';
+
+
+--- FILE: backend\app.js ---
+// backend/app.js
+import express from 'express';
+import cors from 'cors';
 
 const app = express();
-const PORT = process.env.BACKEND_PORT || 5000;
 
+// Middlewares
+app.use(cors());
+app.use(express.json());
+
+// Register API routes
 app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello from backend!' });
+    res.json({ message: 'Hello from backend!' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+export default app;
+
+
+--- FILE: backend\jest.config.js ---
+// backend/jest.config.js
+export default {
+    testEnvironment: 'node',
+    transform: {},
+    setupFilesAfterEnv: [],
+  };
+  
+
+--- FILE: backend\server.js ---
+import dotenv from 'dotenv';
+import fs from 'fs';
+import https from 'https';
+import http from 'http';
+import app from './app.js';
+
+// Load environment variables
+dotenv.config({ path: './.env' });
+
+const PORT = process.env.BACKEND_PORT || 5000;
+
+// Load SSL paths from environment
+const keyPath = process.env.SSL_KEY_PATH;
+const certPath = process.env.SSL_CERT_PATH;
+if (process.env.NODE_ENV !== 'test') {
+  // Conditional HTTPS support
+  if (keyPath && certPath && fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+    // SSL files found, start HTTPS server
+    const sslOptions = {
+      key: fs.readFileSync(keyPath),
+      cert: fs.readFileSync(certPath),
+    };
+
+    https.createServer(sslOptions, app).listen(PORT, () => {
+      console.log(`🔐 HTTPS server is running on port ${PORT}`);
+    });
+  } else {
+    // SSL not configured, start regular HTTP server
+    http.createServer(app).listen(PORT, () => {
+      console.log(`🌐 HTTP server is running on port ${PORT}`);
+    });
+  }
+}
+
+
+
+--- FILE: backend\__tests__\app.test.js ---
+// backend/__tests__/app.test.js
+import request from 'supertest';
+import app from '../app.js';
+
+describe('GET /api/hello', () => {
+  it('should return greeting message', async () => {
+    const res = await request(app).get('/api/hello');
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ message: 'Hello from backend!' });
+  });
 });
 
