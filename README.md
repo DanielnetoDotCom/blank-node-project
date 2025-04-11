@@ -1,6 +1,6 @@
 # 🧱 Full Stack Starter Template — Vite + Tailwind + Express
 
-[![CI Status](https://github.com/DanielnetoDotCom/blank-node-project/actions/workflows/main.yml/badge.svg)](https://github.com/DanielnetoDotCom/blank-node-project/actions)
+[![CI Status](https://github.com/DanielnetoDotCom/blank-node-project/actions/workflows/ci.yml/badge.svg)](https://github.com/DanielnetoDotCom/blank-node-project/actions)
 
 A reusable full-stack starter project using:
 
