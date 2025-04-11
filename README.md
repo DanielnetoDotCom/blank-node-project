@@ -1,6 +1,8 @@
 # 🧱 Full Stack Starter Template — Vite + Tailwind + Express
 
-This is a reusable full-stack starter project using:
+[![CI Status](https://github.com/DanielnetoDotCom/blank-node-project/actions/workflows/main.yml/badge.svg)](https://github.com/DanielnetoDotCom/blank-node-project/actions)
+
+A reusable full-stack starter project using:
 
 - **Frontend**: React + Vite + Tailwind CSS  
 - **Backend**: Express (Node.js)  
@@ -12,8 +14,8 @@ This is a reusable full-stack starter project using:
 
 ```
 my-project/
-├── frontend/      # React app with Vite and Tailwind
-├── backend/       # Express server
+├── frontend/         # React app with Vite and Tailwind
+├── backend/          # Express server
 ├── scan-js-files.js  # Utility to list all JS/TS files with content
 ├── js-files.txt      # Output file from scan script
 └── README.md
@@ -66,7 +68,9 @@ cd ../frontend
 npm run dev
 ```
 
-## 🧪 File Scanner
+---
+
+## 🧪 JS/TS File Scanner
 
 This project includes a utility script to scan all JavaScript/TypeScript files across both frontend and backend and output their contents into a single `.txt` file.
 
@@ -78,11 +82,13 @@ node scan-js-files.js
 
 ### Output:
 
-A file `js-files.txt` will be created in the root, with:
+Creates `js-files.txt` in the root directory with:
 
 - Relative file paths
-- File contents
-- Ignores `node_modules` automatically
+- Full file contents
+- Automatically ignores `node_modules`
+
+---
 
 ## 🔄 Reusing This Template
 
@@ -90,20 +96,23 @@ To use this setup in future projects:
 
 - Mark this repo as a **template** in GitHub settings
 - Click **"Use this template"** to create a new project
-- Alternatively, use [`degit`](https://github.com/Rich-Harris/degit):
+- Or use [`degit`](https://github.com/Rich-Harris/degit):
 
 ```bash
 npx degit your-username/your-repo-name my-new-app
 ```
 
+---
+
 ## 📌 Notes
 
 - No sensitive data should be stored here
 - Keep the structure clean and minimal
-- Adapt as needed per project
+- Adapt freely to your project needs
+
+---
 
 ## 🧑‍💻 Author
 
 Daniel de Oliveira Santos Neto  
-[Your GitHub Profile](https://github.com/YOUR-USERNAME)
-
+[GitHub Profile](https://github.com/DanielnetoDotCom)
