@@ -1,6 +1,12 @@
 # 🧱 Full Stack Starter Template — Vite + Tailwind + Express
 
-[![CI Status](https://github.com/DanielnetoDotCom/blank-node-project/actions/workflows/ci.yml/badge.svg)](https://github.com/DanielnetoDotCom/blank-node-project/actions)
+## 🧪 Build Status
+
+| Workflow              | Status |
+|-----------------------|--------|
+| CI Tests              | [![CI Status](https://github.com/DanielnetoDotCom/blank-node-project/actions/workflows/ci.yml/badge.svg)](https://github.com/DanielnetoDotCom/blank-node-project/actions/workflows/ci.yml) |
+| Automerge             | [![Automerge Status](https://github.com/DanielnetoDotCom/blank-node-project/actions/workflows/automerge.yml/badge.svg)](https://github.com/DanielnetoDotCom/blank-node-project/actions/workflows/automerge.yml) |
+| Docker Compose Test   | [![Docker Compose Test](https://github.com/DanielnetoDotCom/blank-node-project/actions/workflows/docker-compose-test.yml/badge.svg)](https://github.com/DanielnetoDotCom/blank-node-project/actions/workflows/docker-compose-test.yml) |
 
 A reusable full-stack starter project using:
 
