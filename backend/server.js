@@ -3,6 +3,7 @@ import fs from 'fs';
 import https from 'https';
 import http from 'http';
 import app from './app.js';
+import logger from './logger.js';
 
 // Load environment variables
 dotenv.config({ path: './.env' });
@@ -22,12 +23,12 @@ if (process.env.NODE_ENV !== 'test') {
     };
 
     https.createServer(sslOptions, app).listen(PORT, () => {
-      console.log(`🔐 HTTPS server is running on port ${PORT}`);
+      logger.info(`HTTPS server is running on port ${PORT}`);
     });
   } else {
     // SSL not configured, start regular HTTP server
     http.createServer(app).listen(PORT, () => {
-      console.log(`🌐 HTTP server is running on port ${PORT}`);
+      logger.info(`HTTP server is running on port ${PORT}`);
     });
   }
 }

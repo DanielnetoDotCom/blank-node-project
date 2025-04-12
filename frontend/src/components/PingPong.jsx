@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Button from './Button';
 
 function PingPong({ baseUrl }) {
   if (!baseUrl) {
@@ -23,9 +24,7 @@ function PingPong({ baseUrl }) {
   return (
     <div className="p-4 border rounded shadow max-w-sm mx-auto my-4">
       <h2 className="text-xl font-bold mb-2">Ping Pong Test</h2>
-      <button onClick={ping} className="bg-blue-600 text-white px-4 py-2 rounded">
-        Ping
-      </button>
+      <Button onClick={ping}>Ping</Button>
 
       {response && (
         <p className="mt-3">
