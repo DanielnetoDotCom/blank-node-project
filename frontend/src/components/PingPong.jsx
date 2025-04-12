@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-function PingPong({ baseUrl = '' }) {
+function PingPong({ baseUrl }) {
+  if (!baseUrl) {
+    throw new Error('PingPong component requires a baseUrl prop');
+  }
+
   const [response, setResponse] = useState('');
   const [count, setCount]   = useState(0);
 
@@ -18,7 +22,7 @@ function PingPong({ baseUrl = '' }) {
 
   return (
     <div className="p-4 border rounded shadow max-w-sm mx-auto my-4">
-      <h2 className="text-xl font-bold mb-2">Ping Pong Test</h2>
+      <h2 className="text-xl font-bold mb-2">Ping Pong Test</h2>
       <button onClick={ping} className="bg-blue-600 text-white px-4 py-2 rounded">
         Ping
       </button>

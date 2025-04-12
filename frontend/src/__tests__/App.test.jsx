@@ -10,7 +10,7 @@ import App from '../App'
 describe('App component', () => {
   it('renders the app title', () => {
     render(<App />)
-    const title = screen.getByText(/Vite \+ React/i)
+    const title = screen.getByText(/My System Dashboard/i)
     expect(title).toBeInTheDocument()
   })
 })
