@@ -22,10 +22,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install docker-compose -y
 
+      - name: Create .env for backend
+        run: cp backend/.env.example backend/.env
+
       - name: Build and run Docker Compose
         run: |
           docker-compose -f docker-compose.yml up --build -d
-          sleep 10  # give time for servers to start
+          sleep 10
 
       - name: Check backend health
         run: curl -f http://localhost:4000 || (docker-compose logs backend && exit 1)
